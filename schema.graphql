@@ -1,0 +1,94 @@
+# TradingCore events
+type AddMargin {
+  id: ID!
+  market: Bytes!
+  positionId: BigInt!
+  addedAmount: BigInt!
+  blockNumber: Int!
+  logIndex: Int!
+}
+
+type OpenPosition {
+  id: ID!
+  market: Bytes!
+  positionId: BigInt!
+  blockNumber: Int!
+  logIndex: Int!
+}
+
+type ClosePosition {
+  id: ID!
+  market: Bytes!
+  positionId: BigInt!
+  isFullyClosed: Boolean!
+  assetReceived: BigInt!
+  debtReceived: BigInt!
+  swappedAssetToken: BigInt!
+  decreasedDebtAmount: BigInt!
+  decreasedMarginAmount: BigInt!
+  blockNumber: Int!
+  logIndex: Int!
+}
+
+type Liquidate {
+  id: ID!
+  market: Bytes!
+  positionId: BigInt!
+  isFullyClosed: Boolean!
+  assetReceived: BigInt!
+  debtReceived: BigInt!
+  swappedAssetToken: BigInt!
+  decreasedDebtAmount: BigInt!
+  decreasedMarginAmount: BigInt!
+  blockNumber: Int!
+  logIndex: Int!
+}
+
+type StopLoss {
+  id: ID!
+  market: Bytes!
+  positionId: BigInt!
+  isFullyClosed: Boolean!
+  assetReceived: BigInt!
+  debtReceived: BigInt!
+  swappedAssetToken: BigInt!
+  decreasedDebtAmount: BigInt!
+  decreasedMarginAmount: BigInt!
+  blockNumber: Int!
+  logIndex: Int!
+}
+
+type TakeProfit {
+  id: ID!
+  market: Bytes!
+  positionId: BigInt!
+  isFullyClosed: Boolean!
+  assetReceived: BigInt!
+  debtReceived: BigInt!
+  swappedAssetToken: BigInt!
+  decreasedDebtAmount: BigInt!
+  decreasedMarginAmount: BigInt!
+  blockNumber: Int!
+  logIndex: Int!
+}
+
+# MarketNFT Transfer (position NFT)
+type PositionTransfer {
+  id: ID!
+  from: Bytes!
+  to: Bytes!
+  tokenId: BigInt!
+  blockNumber: Int!
+  logIndex: Int!
+}
+
+# Aggregated stats - demonstrates custom entity with handler logic
+# totalOpenPositions = net count of currently open positions (+1 on OpenPosition, -1 on Close/Liquidate/StopLoss/TakeProfit)
+type IndexerStats {
+  id: ID!
+  totalOpenPositions: BigInt!
+  totalClosePositions: BigInt!
+  totalPositionTransfers: BigInt!
+  lastProcessedBlock: Int!
+  lastProcessedTimestamp: Int!
+}

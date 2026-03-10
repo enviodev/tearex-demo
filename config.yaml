@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=./node_modules/envio/evm.schema.json
+name: tearex-indexer
+description: Tea-REX margin trading indexer
+networks:
+  - id: 1329 # SEI Mainnet
+    start_block: 0
+    hypersync_config:
+      url: https://sei.hypersync.xyz
+    contracts:
+      - name: TradingCore
+        address: "0xda437bdb83ba406bc41185ebaeee6f2b2691d056"
+        handler: src/EventHandlers.ts
+        events:
+          - event: "AddMargin(address indexed market, uint256 indexed positionId, uint256 addedAmount)"
+          - event: "OpenPosition(address indexed market, uint256 indexed positionId)"
+          - event: "ClosePosition(address indexed market, uint256 indexed positionId, bool indexed isFullyClosed, uint256 assetReceived, uint256 debtReceived, uint256 swappedAssetToken, uint256 decreasedDebtAmount, uint256 decreasedMarginAmount)"
+          - event: "Liquidate(address indexed market, uint256 indexed positionId, bool indexed isFullyClosed, uint256 assetReceived, uint256 debtReceived, uint256 swappedAssetToken, uint256 decreasedDebtAmount, uint256 decreasedMarginAmount)"
+          - event: "StopLoss(address indexed market, uint256 indexed positionId, bool indexed isFullyClosed, uint256 assetReceived, uint256 debtReceived, uint256 swappedAssetToken, uint256 decreasedDebtAmount, uint256 decreasedMarginAmount)"
+          - event: "TakeProfit(address indexed market, uint256 indexed positionId, bool indexed isFullyClosed, uint256 assetReceived, uint256 debtReceived, uint256 swappedAssetToken, uint256 decreasedDebtAmount, uint256 decreasedMarginAmount)"
+      - name: MarketNFT
+        address: "0x1b74d1e2f52378a0f23ae4bf241a4b402288f514"
+        handler: src/EventHandlers.ts
+        events:
+          - event: "Transfer(address indexed from, address indexed to, uint256 indexed tokenId)"
+# Unordered multichain mode allows you to index events from multiple chains
+# in realtime but doesn't guarentee ordering between chains
+# https://docs.envio.dev/docs/HyperIndex/multichain-indexing#unordered-multichain-mode
+unordered_multichain_mode: true
+# Preload optimisation makes your indexer much faster.
+# But be aware that your handlers will run twice,
+# so make sure to use Effect API for external calls.
+preload_handlers: true
+# Address format for Ethereum addresses: 'checksum' or 'lowercase'
+# using lowercase addresses is slightly faster
+address_format: lowercase
+# Include transaction hash for event IDs
+field_selection:
+  transaction_fields:
+    - hash
