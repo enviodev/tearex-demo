@@ -1,15 +1,5 @@
-import {
-  TradingCore,
-  MarketNFT,
-  AddMargin,
-  OpenPosition,
-  ClosePosition,
-  Liquidate,
-  StopLoss,
-  TakeProfit,
-  PositionTransfer,
-  IndexerStats,
-} from "generated";
+import { indexer } from "envio";
+import { TradingCore, MarketNFT, AddMargin, OpenPosition, ClosePosition, Liquidate, StopLoss, TakeProfit, PositionTransfer, IndexerStats } from "envio";
 
 const STATS_ID = "global";
 
@@ -31,7 +21,9 @@ async function updateStats(
 }
 
 // TradingCore event handlers - each sets an entity for the event
-TradingCore.AddMargin.handler(async ({ event, context }) => {
+indexer.onEvent(
+  { contract: "TradingCore", event: "AddMargin" },
+  async ({ event, context }) => {
   const id = `${event.block.number}-${event.logIndex}`;
   const entity: AddMargin = {
     id,
@@ -42,9 +34,12 @@ TradingCore.AddMargin.handler(async ({ event, context }) => {
     logIndex: event.logIndex,
   };
   context.AddMargin.set(entity);
-});
+}
+);
 
-TradingCore.OpenPosition.handler(async ({ event, context }) => {
+indexer.onEvent(
+  { contract: "TradingCore", event: "OpenPosition" },
+  async ({ event, context }) => {
   const id = `${event.block.number}-${event.logIndex}`;
   const entity: OpenPosition = {
     id,
@@ -55,9 +50,12 @@ TradingCore.OpenPosition.handler(async ({ event, context }) => {
   };
   context.OpenPosition.set(entity);
   await updateStats(context, { openDelta: 1 }, event.block);
-});
+}
+);
 
-TradingCore.ClosePosition.handler(async ({ event, context }) => {
+indexer.onEvent(
+  { contract: "TradingCore", event: "ClosePosition" },
+  async ({ event, context }) => {
   const id = `${event.block.number}-${event.logIndex}`;
   const entity: ClosePosition = {
     id,
@@ -74,9 +72,12 @@ TradingCore.ClosePosition.handler(async ({ event, context }) => {
   };
   context.ClosePosition.set(entity);
   await updateStats(context, { openDelta: -1, closeDelta: 1 }, event.block);
-});
+}
+);
 
-TradingCore.Liquidate.handler(async ({ event, context }) => {
+indexer.onEvent(
+  { contract: "TradingCore", event: "Liquidate" },
+  async ({ event, context }) => {
   const id = `${event.block.number}-${event.logIndex}`;
   const entity: Liquidate = {
     id,
@@ -93,9 +94,12 @@ TradingCore.Liquidate.handler(async ({ event, context }) => {
   };
   context.Liquidate.set(entity);
   await updateStats(context, { openDelta: -1, closeDelta: 1 }, event.block);
-});
+}
+);
 
-TradingCore.StopLoss.handler(async ({ event, context }) => {
+indexer.onEvent(
+  { contract: "TradingCore", event: "StopLoss" },
+  async ({ event, context }) => {
   const id = `${event.block.number}-${event.logIndex}`;
   const entity: StopLoss = {
     id,
@@ -112,9 +116,12 @@ TradingCore.StopLoss.handler(async ({ event, context }) => {
   };
   context.StopLoss.set(entity);
   await updateStats(context, { openDelta: -1, closeDelta: 1 }, event.block);
-});
+}
+);
 
-TradingCore.TakeProfit.handler(async ({ event, context }) => {
+indexer.onEvent(
+  { contract: "TradingCore", event: "TakeProfit" },
+  async ({ event, context }) => {
   const id = `${event.block.number}-${event.logIndex}`;
   const entity: TakeProfit = {
     id,
@@ -131,10 +138,13 @@ TradingCore.TakeProfit.handler(async ({ event, context }) => {
   };
   context.TakeProfit.set(entity);
   await updateStats(context, { openDelta: -1, closeDelta: 1 }, event.block);
-});
+}
+);
 
 // MarketNFT Transfer (position NFT)
-MarketNFT.Transfer.handler(async ({ event, context }) => {
+indexer.onEvent(
+  { contract: "MarketNFT", event: "Transfer" },
+  async ({ event, context }) => {
   const id = `${event.block.number}-${event.logIndex}`;
   const entity: PositionTransfer = {
     id,
@@ -146,4 +156,5 @@ MarketNFT.Transfer.handler(async ({ event, context }) => {
   };
   context.PositionTransfer.set(entity);
   await updateStats(context, { transferDelta: 1 }, event.block);
-});
+}
+);

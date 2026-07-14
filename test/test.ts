@@ -1,5 +1,5 @@
 import assert from "assert";
-import { TestHelpers } from "generated";
+import { TestHelpers } from "envio";
 const { MockDb, TradingCore, MarketNFT, Addresses } = TestHelpers;
 
 describe("Tea-REX Events", () => {
